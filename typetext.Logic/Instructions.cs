@@ -40,28 +40,28 @@ namespace typetext.Logic
             var result = CheckInt(input);
             acc = result.Value;
             if (!result.Result)
-                StackOverflow.Add($"{input} is not an integer"); // stores 0 if input was not integer and gives error
+                newError($"{input} is not an integer"); // stores 0 if input was not integer and gives error
         }
         public static void Set(string variable) // Stores the value from accumulator to a specified location in memory
         {
             NewLocation(variable);
             memory[variable] = acc;
             if (CheckInt(variable).Result)
-                StackOverflow.Add($"variable {variable} cannot be accessed because it is an integer");
+                newError($"variable {variable} cannot be accessed because it is an integer");
         }
         public static void Get(string variable)
         {
             BoolInt result = GetValue(variable);
             acc = result.Value;
             if (!result.Result)
-                StackOverflow.Add($"{variable} does not exist in the memory");
+                newError($"{variable} does not exist in the memory");
         }
         public static void Add(string variable)
         {
             BoolInt result = GetValue(variable);
             acc += result.Value;
             if (!result.Result)
-                StackOverflow.Add($"{variable} does not exist in the memory");
+                newError($"{variable} does not exist in the memory");
         }
         public static void Negate()
         {
@@ -74,7 +74,7 @@ namespace typetext.Logic
                 acc = 1;
             else if ((acc - result.Value) < 0)
                 acc = -1;
-            else acc = -1;
+            else acc = 0;
         }
         public static void Check(string variable)
         {
@@ -82,11 +82,11 @@ namespace typetext.Logic
             if (!(acc - (result.Value) == 0))
                 pc++;
         }
-        public static void Label()
+        public static void Label(int i)
         {
-            int index = pc + 1;
+            int index = i + 1;
             NewLocation(CallQueue[index]);
-            memory[CallQueue[index]] = pc;
+            memory[CallQueue[index]] = index;
         }
         public static void Goto(string variable)
         {
@@ -97,13 +97,17 @@ namespace typetext.Logic
         public static void Rand(string variable)
         {
             var result = GetValue(variable);
-            Random r = new Random();
             acc = r.Next(0, result.Value + 1);
         }
-        public static string Send(string variable)
+        public static void Send(string variable)
         {
             var result = GetValue(variable);
-            return $"{result.Value}";
+            Output.Add($"{result.Value}");
+            send();
+        }
+        public static void print(string variable)
+        {
+            var print = $"{variable}";
         }
     }
 }
