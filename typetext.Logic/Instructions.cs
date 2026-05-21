@@ -35,7 +35,7 @@ namespace typetext.Logic
             }
         }
         #endregion
-        public static void Type(string input) // Stores the value to the accumulator
+        public static void Type() // Stores the value to the accumulator
         {
             var result = CheckInt(input);
             acc = result.Value;
@@ -99,11 +99,19 @@ namespace typetext.Logic
             var result = GetValue(variable);
             acc = r.Next(0, result.Value + 1);
         }
+        public static void Line()
+        {
+            acc = pc;
+        }
         public static void Send(string variable)
         {
             var result = GetValue(variable);
             Output.Add($"{result.Value}");
             send();
+        }
+        public static void Clear()
+        {
+            Output.Clear();
         }
         public static void print(string variable)
         {

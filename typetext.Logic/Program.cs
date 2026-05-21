@@ -10,7 +10,9 @@ namespace typetext.Logic
         public static bool cu = false; // decides to run task
         public static event Action<List<string>> DataBus;
         public static event Action<List<string>> Errors;
+        public static TaskCompletionSource<string> waitInput; 
         public static string input = ""; // current inputed value
+        public static bool inputing = true;
         public static Random r = new Random(); // random number
         public static Dictionary<string, int> memory = new(); // stores the variables
         public static List<string> Output = new(); // stores all outputs
@@ -35,6 +37,11 @@ namespace typetext.Logic
             StackOverflow.Add(error);
             Errors?.Invoke([..StackOverflow]);
         }
+        public static void SubmitInput(string input)
+        {
+            waitInput?.TrySetResult(input);
+        }
+        public static bool run = false;
         public static async Task Run(string code)
         {
             r = new Random();
@@ -44,14 +51,13 @@ namespace typetext.Logic
             memory.Clear();
             Output.Clear();
             StackOverflow.Clear();
-            bool run = false;
             int safety = 0;
 
 
             code = code.ToLower();
             CallQueue = code.Split(new char[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < CallQueue.Length; i++) 
-            {
+            { 
                 if (CallQueue[i] == "label")
                     Label(i);
                 if (CallQueue[i] == "close")
@@ -69,8 +75,14 @@ namespace typetext.Logic
                     Negate();
                 else if (CallQueue[pc] == "close")
                     run = false;
+                else if (CallQueue[pc] == "clear")
+                    Clear();
                 else if (CallQueue[pc] == "type")
-                    Type(input);
+                {
+                    waitInput = new TaskCompletionSource<string>();
+                    input = await waitInput.Task;
+                    Type();
+                }
                 else if (CallQueue[pc] == "word") { }
 
                 else if (instructions.TryGetValue(CallQueue[pc], out var instruction))
@@ -83,8 +95,11 @@ namespace typetext.Logic
                     pc++;
 
                 safety++;
-                if (safety == 4999)
+                if (safety == 49999)
+                {
                     run = false;
+                    newError("Exceeded max memory");
+                }
             }
         }  
     }

@@ -37,6 +37,10 @@
             StopBtn = new Button();
             StackOverflow = new RichTextBox();
             label3 = new Label();
+            InputBox = new TextBox();
+            label4 = new Label();
+            FileName = new TextBox();
+            label5 = new Label();
             SuspendLayout();
             // 
             // CodeEditor
@@ -46,6 +50,7 @@
             CodeEditor.Name = "CodeEditor";
             CodeEditor.Size = new Size(481, 609);
             CodeEditor.TabIndex = 0;
+            CodeEditor.KeyDown += ConditionedSupress;
             // 
             // Outputs
             // 
@@ -54,6 +59,7 @@
             Outputs.Size = new Size(123, 439);
             Outputs.TabIndex = 1;
             Outputs.Text = "";
+            Outputs.KeyDown += Supress;
             // 
             // RunBtn
             // 
@@ -120,6 +126,7 @@
             StackOverflow.Size = new Size(774, 174);
             StackOverflow.TabIndex = 7;
             StackOverflow.Text = "";
+            StackOverflow.KeyDown += Supress;
             // 
             // label3
             // 
@@ -132,12 +139,56 @@
             label3.TabIndex = 8;
             label3.Text = "Errors";
             // 
+            // InputBox
+            // 
+            InputBox.Location = new Point(1301, 131);
+            InputBox.Name = "InputBox";
+            InputBox.Size = new Size(158, 27);
+            InputBox.TabIndex = 9;
+            InputBox.KeyDown += EnterInput;
+            InputBox.KeyDown += ConditionedSupress;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.ForeColor = Color.MidnightBlue;
+            label4.Location = new Point(1301, 93);
+            label4.Name = "label4";
+            label4.Size = new Size(79, 35);
+            label4.TabIndex = 10;
+            label4.Text = "Input";
+            // 
+            // FileName
+            // 
+            FileName.Location = new Point(50, 775);
+            FileName.Name = "FileName";
+            FileName.PlaceholderText = "Name";
+            FileName.Size = new Size(184, 27);
+            FileName.TabIndex = 11;
+            FileName.KeyDown += ConditionedSupress;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.ForeColor = Color.Black;
+            label5.Location = new Point(255, 767);
+            label5.Name = "label5";
+            label5.Size = new Size(156, 35);
+            label5.TabIndex = 12;
+            label5.Text = "<- FileName";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.CadetBlue;
             ClientSize = new Size(2297, 1047);
+            Controls.Add(label5);
+            Controls.Add(FileName);
+            Controls.Add(label4);
+            Controls.Add(InputBox);
             Controls.Add(label3);
             Controls.Add(StackOverflow);
             Controls.Add(StopBtn);
@@ -148,11 +199,14 @@
             Controls.Add(Outputs);
             Controls.Add(CodeEditor);
             FormBorderStyle = FormBorderStyle.None;
+            KeyPreview = true;
             Name = "Form1";
             Text = "TypeDeck";
             WindowState = FormWindowState.Maximized;
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
+            Click += Form1_Click;
+            KeyDown += Form1_KeyDown;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -168,5 +222,9 @@
         private Button StopBtn;
         private RichTextBox StackOverflow;
         private Label label3;
+        private TextBox InputBox;
+        private Label label4;
+        private TextBox FileName;
+        private Label label5;
     }
 }
